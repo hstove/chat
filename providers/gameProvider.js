@@ -7,8 +7,7 @@ var BSON = require('mongodb').BSON;
 var ObjectID = require('mongodb').ObjectID;
 
 GameProvider = function(host, port) {
-  this.db= new Db('node-mongo-blog', new Server(host, port, {auto_reconnect: true}, {}));
-  this.db.authenticate('hank', 'pass', function(){ console.log('yo') });
+  this.db= new Db('new-node', new Server(host, port, {auto_reconnect: true}, {}));
   this.db.open(function(){});
 };
 
@@ -50,18 +49,17 @@ GameProvider.prototype.save = function(games, callback) {
                   for(var j =0;j< game.comments.length; j++) {
                         game.comments[j].created_at = new Date();
                   }
+                  game_collection.insert(game, function() {
+                    callback(null, game);
+                  });
             }
-
-            game_collection.insert(games, function() {
-              callback(null, games);
-            });
         }
     });
 }
 
-/*new GameProvider('0.0.0.0', process.env.PORT).save([{
+new GameProvider('127.0.0.1', 27017).save([{
     title: 'championchip',
     home: 'Gonzaga',
-    away: 'Dematha' }], function(error, games){});*/
+    away: 'Dematha' }], function(error, games){});
 
 exports.GameProvider = GameProvider;
