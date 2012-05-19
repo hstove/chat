@@ -1,0 +1,38 @@
+var gameCounter = 0;
+
+GameProvider = function(){};
+GameProvider.prototype.dummyData = [];
+
+GameProvider.prototype.findAll = function(callback) {
+  callback( null, this.dummyData )
+};
+
+GameProvider.prototype.save = function(games, callback) {
+    var game = null;
+
+    if( typeof(games.length)=="undefined")
+        games = [games];
+
+    for (var i in games){
+        game = games[i];
+        game._id = gameCounter++;
+        game.createdAt = new Date();
+
+        if( game.comments === undefined )
+            game.comments = [];
+
+        for(var j =0;j< game.comments.length; j++) {
+            game.comments[j].created_at = new Date();
+        }
+
+        this.dummyData.push(game);
+    }  
+    callback(null, games);
+}
+
+GameProvider.save([{
+    title: 'championchip',
+    home: 'Gonzaga',
+    away: 'Dematha' }], function(error, games){});
+
+exports.GameProvider = GameProvider;
